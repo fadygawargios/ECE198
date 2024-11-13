@@ -130,14 +130,10 @@ int main(void)
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 0);
 
 	// if readValue, the moisture data indicates a lot of water
-	if(readValue < 2700) {
+	if(readValue < 1200) {
 	    // printf("Moisture level low: %d\n", readValue);  // Print readValue to terminal
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 	}
-	else {
-		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-	}
-
 
 
 
