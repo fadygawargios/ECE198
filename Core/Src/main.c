@@ -21,6 +21,9 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>
+#include <string.h>
+#include "liquidcrystal_i2c.h"
 
 
 /* USER CODE END Includes */
@@ -105,6 +108,17 @@ int main(void)
   MX_USART2_UART_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+  HD44780_Init(2);
+  HD44780_Backlight();
+  HD44780_Clear();
+  HD44780_SetCursor(0,0);
+  HD44780_PrintStr("Hello World!");
+  HD44780_SetCursor(0,1);
+  HD44780_PrintStr("From Fady Guma");
+  HAL_Delay(9000);
+  HD44780_Clear();
+
+
   // int pin = 0;
 
 
@@ -122,13 +136,16 @@ int main(void)
 	// Gives power to moisture sensor (via VCC)
 
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_7, 1);
-	HAL_Delay(15);
+	HAL_Delay(150);
 
 	// updates readValue with moisture data
 	HAL_ADC_PollForConversion(&hadc1,1000);
 	readValue = HAL_ADC_GetValue(&hadc1);
 
-	sprintf(msg, "Value: %hu \r\n", readValue);
+	sprintf(msg, "Moisture: %hu \r\n", readValue);
+	HD44780_Clear();
+	HD44780_SetCursor(0,1);
+    HD44780_PrintStr(msg);  // Display on the LCD
 	HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	HAL_Delay(500);
 
@@ -138,8 +155,10 @@ int main(void)
 
 	// if readValue, the moisture data indicates a lot of water
 	if(readValue < 2700) {
-	    // printf("Moisture level low: %d\n", readValue);  // Print readValue to terminal
+		HD44780_SetCursor(0, 0);
+	    HD44780_PrintStr("Too much water!");
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+	    HAL_Delay(500);
 	}
 	else {
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
