@@ -55,6 +55,9 @@ UART_HandleTypeDef huart2;
 /* USER CODE BEGIN PV */
 uint16_t readValue = 0;
 char msg[20];
+int moisturePercentage = 0;
+const int maxValue = 4000;
+const int minValue = 2000;
 
 /* USER CODE END PV */
 
@@ -142,10 +145,21 @@ int main(void)
 	HAL_ADC_PollForConversion(&hadc1,1000);
 	readValue = HAL_ADC_GetValue(&hadc1);
 
-	sprintf(msg, "Moisture: %hu \r\n", readValue);
+    moisturePercentage = (readValue - maxValue) * 100 / (minValue - maxValue);
+
+    // Ensure percentage is within the 0% to 100% range
+    if (moisturePercentage < 0) {
+    	moisturePercentage = 0;
+    } else if (moisturePercentage > 100) {
+    	moisturePercentage = 100;
+    }
+
+	sprintf(msg, "Moisture: %d%% \r\n", moisturePercentage);
 	HD44780_Clear();
 	HD44780_SetCursor(0,1);
     HD44780_PrintStr(msg);  // Display on the LCD
+
+
 	HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 	HAL_Delay(500);
 
