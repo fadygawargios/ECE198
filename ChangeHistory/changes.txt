@@ -1,0 +1,39 @@
+2024-11-13, Collecting Moisture Data with ADC, Revision #1:
+
+Initial configuration and testing of ADC to collect moisture sensor data. This included wiring and reading/converting with polling. 
+
+2024-11-13, I2C Config for Screen, Revision #2:
+
+Set up I2C communication for initializing and controlling the LCD screen. This also included identifying the address of the screen. 
+
+
+2024-11-15, Displaying Moisture Data, Revision #3:
+
+Developed functionality to display collected moisture data on the LCD. The data at this point was being displayed as read by the ADC.
+
+2024-11-18, Moisture Data to Percentage, Revision #5:
+
+Converted raw ADC data into a percentage for better interpretation and connection with pH.
+
+
+2024-11-19, Limiting Moisture Percentage, Revision #6:
+
+Implemented logic to constrain moisture levels to a percentage range (e.i., to not exceed 0-100% due to noise).
+
+
+2024-11-15, Overwatering Detection, Revision #4:
+
+Added functionality to detect and indicate overwatering conditions, and notify the user with a message.
+
+2024-11-27, USART Config, Revision #7:
+
+Configured USART for serial communication with the other STM32. Originally was using USART2 when I discovered that this was only for STM-to-desktop connection; in this revision, I updated this accordingly. 
+
+2024-11-27, USART Pin Change Revision #8:
+
+Updated USART settings to accommodate changes in pin assignments.
+
+2024-11-27, HAL_Transmit & Receive Revision #9:
+
+Used the Hardware Abstraction Layer to send and receive a 4 char array through wired connection.
+
