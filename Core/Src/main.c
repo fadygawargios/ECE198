@@ -74,6 +74,7 @@ static void MX_I2C1_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t charToTransmit[1];
 
 /* USER CODE END 0 */
 
@@ -115,14 +116,18 @@ int main(void)
   HD44780_Backlight();
   HD44780_Clear();
   HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Hello World!");
+  HD44780_PrintStr("Plant Automation");
+  HAL_Delay(200);
+  HD44780_Clear();
+  HD44780_PrintStr("Controller");
   HD44780_SetCursor(0,1);
-  HD44780_PrintStr("From Fady Guma");
-  HAL_Delay(9000);
+  HD44780_PrintStr("Booting up...");
+  HAL_Delay(900);
   HD44780_Clear();
 
 
-  // int pin = 0;
+  int pin = 0;
+  int command = 0;
 
 
   /* USER CODE END 2 */
@@ -146,6 +151,19 @@ int main(void)
 	readValue = HAL_ADC_GetValue(&hadc1);
 
     moisturePercentage = (readValue - maxValue) * 100 / (minValue - maxValue);
+    // charToTransmit[0] = '5';
+//	HAL_UART_Transmit(&huart1, charToTransmit, 1, 100);
+//	HAL_Delay(500);
+
+    command = HAL_GPIO_ReadPin(COM_GPIO_Port, COM_Pin);
+    if (command==1) {
+    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+    }
+    else {
+    	HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    }
+
+
 
     // Ensure percentage is within the 0% to 100% range
     if (moisturePercentage < 0) {
@@ -466,6 +484,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(PSU_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : COM_Pin */
+  GPIO_InitStruct.Pin = COM_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(COM_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
