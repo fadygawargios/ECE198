@@ -66,6 +66,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define PSU_Pin GPIO_PIN_7
 #define PSU_GPIO_Port GPIOA
+#define COM_Pin GPIO_PIN_9
+#define COM_GPIO_Port GPIOA
 
 /* USER CODE BEGIN Private defines */
 
