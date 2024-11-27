@@ -50,6 +50,7 @@ I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim2;
 
+UART_HandleTypeDef huart1;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -68,12 +69,14 @@ static void MX_ADC1_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_I2C1_Init(void);
+static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+uint8_t charToTransmit[1];
 
 /* USER CODE END 0 */
 
@@ -110,15 +113,19 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   MX_I2C1_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   HD44780_Init(2);
   HD44780_Backlight();
   HD44780_Clear();
   HD44780_SetCursor(0,0);
-  HD44780_PrintStr("Hello World!");
+  HD44780_PrintStr("Plant Automation");
+  HAL_Delay(200);
+  HD44780_Clear();
+  HD44780_PrintStr("Controller");
   HD44780_SetCursor(0,1);
-  HD44780_PrintStr("From Fady Guma");
-  HAL_Delay(9000);
+  HD44780_PrintStr("Booting up...");
+  HAL_Delay(900);
   HD44780_Clear();
 
 
@@ -146,6 +153,9 @@ int main(void)
 	readValue = HAL_ADC_GetValue(&hadc1);
 
     moisturePercentage = (readValue - maxValue) * 100 / (minValue - maxValue);
+    charToTransmit[0] = '5';
+	HAL_UART_Transmit(&huart1, charToTransmit, 1, 100);
+	HAL_Delay(500);
 
     // Ensure percentage is within the 0% to 100% range
     if (moisturePercentage < 0) {
@@ -391,6 +401,39 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 2 */
   HAL_TIM_MspPostInit(&htim2);
+
+}
+
+/**
+  * @brief USART1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART1_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART1_Init 0 */
+
+  /* USER CODE END USART1_Init 0 */
+
+  /* USER CODE BEGIN USART1_Init 1 */
+
+  /* USER CODE END USART1_Init 1 */
+  huart1.Instance = USART1;
+  huart1.Init.BaudRate = 9600;
+  huart1.Init.WordLength = UART_WORDLENGTH_8B;
+  huart1.Init.StopBits = UART_STOPBITS_1;
+  huart1.Init.Parity = UART_PARITY_EVEN;
+  huart1.Init.Mode = UART_MODE_TX_RX;
+  huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART1_Init 2 */
+
+  /* USER CODE END USART1_Init 2 */
 
 }
 
