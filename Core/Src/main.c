@@ -129,7 +129,8 @@ int main(void)
   HD44780_Clear();
 
 
-  // int pin = 0;
+  int pin = 0;
+  int command = 0;
 
 
   /* USER CODE END 2 */
@@ -170,8 +171,14 @@ int main(void)
     HD44780_PrintStr(msg);  // Display on the LCD
 
 
-	HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-	HAL_Delay(500);
+//	HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
+//	HAL_Delay(500);
+   if (command==1) {
+	   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+    }
+   else {
+	   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+    }
 
 
 	// Disables power from moisture sensor
